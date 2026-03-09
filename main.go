@@ -5,6 +5,7 @@ import (
 	cmd2 "claude-squad/cmd"
 	"claude-squad/config"
 	"claude-squad/daemon"
+	"claude-squad/add"
 	"claude-squad/log"
 	"claude-squad/session"
 	"claude-squad/session/git"
@@ -160,6 +161,7 @@ func init() {
 	rootCmd.AddCommand(debugCmd)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(resetCmd)
+	rootCmd.AddCommand(add.Cmd)
 }
 
 func main() {

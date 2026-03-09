@@ -2,6 +2,7 @@ package session
 
 import (
 	"claude-squad/config"
+	"claude-squad/log"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -81,13 +82,14 @@ func (s *Storage) LoadInstances() ([]*Instance, error) {
 		return nil, fmt.Errorf("failed to unmarshal instances: %w", err)
 	}
 
-	instances := make([]*Instance, len(instancesData))
-	for i, data := range instancesData {
+	var instances []*Instance
+	for _, data := range instancesData {
 		instance, err := FromInstanceData(data)
 		if err != nil {
-			return nil, fmt.Errorf("failed to create instance %s: %w", data.Title, err)
+			log.ErrorLog.Printf("skipping instance %q: %v", data.Title, err)
+			continue
 		}
-		instances[i] = instance
+		instances = append(instances, instance)
 	}
 
 	return instances, nil
@@ -141,6 +143,28 @@ func (s *Storage) UpdateInstance(instance *Instance) error {
 	}
 
 	return s.SaveInstances(instances)
+}
+
+// AppendInstanceData appends a new InstanceData to state.json without
+// restoring existing tmux sessions. Safe to call from CLI (non-TUI) context.
+func (s *Storage) AppendInstanceData(newData InstanceData) error {
+	jsonData := s.state.GetInstances()
+
+	var existing []InstanceData
+	if len(jsonData) > 0 {
+		if err := json.Unmarshal(jsonData, &existing); err != nil {
+			// If corrupt, start fresh with just the new entry
+			existing = nil
+		}
+	}
+
+	existing = append(existing, newData)
+
+	out, err := json.Marshal(existing)
+	if err != nil {
+		return fmt.Errorf("failed to marshal instances: %w", err)
+	}
+	return s.state.SaveInstances(out)
 }
 
 // DeleteAllInstances removes all stored instances

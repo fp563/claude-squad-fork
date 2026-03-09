@@ -65,6 +65,8 @@ type Instance struct {
 	tmuxSession *tmux.TmuxSession
 	// gitWorktree is the git worktree for the instance.
 	gitWorktree *git.GitWorktree
+	// branchNameOverride, if set, is used as the branch name directly (no prefix).
+	branchNameOverride string
 }
 
 // ToInstanceData converts an Instance to its serializable form

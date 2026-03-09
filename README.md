@@ -160,3 +160,22 @@ underlying program (ex. `claude`) to the latest version.
 ### Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=smtg-ai/claude-squad&type=Date)](https://www.star-history.com/#smtg-ai/claude-squad&Date)
+
+## AI Issue Workflow (cs add)
+
+### Prerequisites
+- GitHub CLI (`gh`) installed and authenticated (`gh auth login`)
+
+### Usage
+
+```bash
+# Create a session from a GitHub issue number
+cs add 42
+```
+
+### What cs add does
+1. Fetches the specified issue from GitHub
+2. Assigns it to you and adds the `in-progress` label
+3. Creates a git worktree and tmux session
+4. Generates `AI_TASK.md` in the worktree
+5. Saves the session to state.json (visible in the TUI)

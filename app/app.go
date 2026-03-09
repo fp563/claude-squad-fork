@@ -175,14 +175,15 @@ func (m *home) updateHandleWindowSizeEvent(msg tea.WindowSizeMsg) {
 func (m *home) Init() tea.Cmd {
 	// Upon starting, we want to start the spinner. Whenever we get a spinner.TickMsg, we
 	// update the spinner, which sends a new spinner.TickMsg. I think this lasts forever lol.
-	return tea.Batch(
+	cmds := []tea.Cmd{
 		m.spinner.Tick,
 		func() tea.Msg {
 			time.Sleep(100 * time.Millisecond)
 			return previewTickMsg{}
 		},
 		tickUpdateMetadataCmd,
-	)
+	}
+	return tea.Batch(cmds...)
 }
 
 func (m *home) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
