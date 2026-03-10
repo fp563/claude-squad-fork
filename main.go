@@ -6,6 +6,7 @@ import (
 	"claude-squad/config"
 	"claude-squad/daemon"
 	"claude-squad/add"
+	"claude-squad/adopt"
 	"claude-squad/log"
 	"claude-squad/session"
 	"claude-squad/session/git"
@@ -162,6 +163,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(resetCmd)
 	rootCmd.AddCommand(add.Cmd)
+	rootCmd.AddCommand(adopt.Cmd)
 }
 
 func main() {
