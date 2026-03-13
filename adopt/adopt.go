@@ -109,7 +109,7 @@ func adoptBranch(repoRoot, branchName, title, program string) error {
 	}
 
 	// Create worktree from the existing branch
-	gitWorktree, branch, err := git.NewGitWorktreeWithBranch(repoRoot, title, branchName)
+	gitWorktree, err := git.NewGitWorktreeFromBranch(repoRoot, branchName, title)
 	if err != nil {
 		return fmt.Errorf("failed to create git worktree: %w", err)
 	}
@@ -123,7 +123,7 @@ func adoptBranch(repoRoot, branchName, title, program string) error {
 		baseCommitSHA = findMergeBase(repoRoot, branchName)
 	}
 
-	return saveSession(repoRoot, title, branch, program, gitWorktree.GetRepoPath(), gitWorktree.GetWorktreePath(), baseCommitSHA)
+	return saveSession(repoRoot, title, branchName, program, gitWorktree.GetRepoPath(), gitWorktree.GetWorktreePath(), baseCommitSHA)
 }
 
 // findExistingWorktree checks if a worktree already exists for the given branch
@@ -230,11 +230,12 @@ func saveSession(repoRoot, title, branch, program, repoPath, worktreePath, baseC
 		Status:  session.Paused,
 		Program: program,
 		Worktree: session.GitWorktreeData{
-			RepoPath:      repoPath,
-			WorktreePath:  worktreePath,
-			SessionName:   title,
-			BranchName:    branch,
-			BaseCommitSHA: baseCommitSHA,
+			RepoPath:         repoPath,
+			WorktreePath:     worktreePath,
+			SessionName:      title,
+			BranchName:       branch,
+			BaseCommitSHA:    baseCommitSHA,
+			IsExistingBranch: true,
 		},
 	}
 
